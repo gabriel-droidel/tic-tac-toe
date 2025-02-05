@@ -9,45 +9,40 @@ function createGameBoard() {
 	const getBoard = () => board;
 
 	// markCell
-	const markCell = (location, selection) => (board[location] = selection);
+	const markCell = (location, selection) => {
+		board[location] = selection;
+	};
 
 	return { getBoard, markCell };
 }
 // Player //
 function createPlayers() {
+	// handles the creation of the players
 	const players = [];
-	const createPlayer = () => {
-		const name = prompt('Player name : ');
-		const selection = prompt('Choose X or O').toUpperCase();
-		return { name, selection };
-	};
-	const create = () => {
-		const playerOne = createPlayer();
-		const playerTwo = createPlayer();
-		players.push(playerOne, playerTwo);
-		return players;
-	};
-	const getPlayers = () => players;
+	const playerOne = 'X';
+	const playerTwo = 'O';
+	players.push(playerOne, playerTwo);
 
-	return { create, getPlayers };
+	const get = () => players; // get the array of players
+
+	return { get };
 }
 
 // Game //
-function createGameController(
-	playerOneName = 'PlayerOne',
-	playerTwoName = 'PlayerTwo'
-) {
+function createGameController() {
 	const board = createGameBoard();
 	const players = createPlayers();
-	players.create();
-	let activePlayer = players.getPlayers()[0];
+	const playerList = players.get();
+	let activePlayer = playerList[0];
+	let moves = 0;
+	let gameOver = false;
 
 	const switchPlayerTurn = () => {
+		// switch between players
 		activePlayer =
-			activePlayer === players.getPlayers()[0]
-				? players.getPlayers()[1]
-				: players.getPlayers()[0];
+			activePlayer === playerList[0] ? playerList[1] : playerList[0];
 	};
+
 	const getActivePlayer = () => activePlayer;
 
 	const handleWinLogic = (values, selection) => {
@@ -90,45 +85,91 @@ function createGameController(
 	};
 
 	const playRound = (location) => {
-		let gameOver = false;
-		let moves = 0;
-
-		board.markCell(location, getActivePlayer().selection);
-		switchPlayerTurn();
+		if (moves < 9 && gameOver === false) {
+			if (board.getBoard()[location] === null) {
+				board.markCell(location, getActivePlayer());
+				if (handleWinLogic(board.getBoard(), getActivePlayer())) {
+					gameOver = true;
+					return 1;
+				} else if (moves === 8 && gameOver === false) return 2;
+				else {
+					switchPlayerTurn();
+					moves++;
+				}
+			}
+		} else {
+			return 2;
+		}
 	};
 
 	return { playRound, getActivePlayer, getBoard: board.getBoard };
 }
 
 function controlScreen() {
+	// const playerOne = players.create(name,selection);
 	const game = createGameController();
 	const boardDiv = document.querySelector('.game-board');
+	const gameContainerDiv = document.querySelector('.game-container');
 	const turnDiv = document.querySelector('.active-player-board');
-
-	const updateScreen = () => (boardDiv.textContent = '');
-
+	const introBox = document.querySelector('.intro');
 	const board = game.getBoard();
-	const activePlayer = game.getActivePlayer();
+	let isPlaying = true;
+	let activePlayer = game.getActivePlayer();
+	const updateScreen = () => {
+		boardDiv.textContent = '';
+		introBox.classList.remove('disabled');
+		gameContainerDiv.classList.add('disabled');
+	};
+	const refreshBoard = () => {
+		board.forEach((item, index) => {
+			const boxes = document.querySelectorAll('.cell');
+			boxes[index].textContent = item;
+		});
+	};
+	const displayActivePlayer = () =>
+		(turnDiv.textContent = `It's ${activePlayer} Turn!`);
 
-	turnDiv.textContent = `It's ${activePlayer.name}'s Turn!`;
+	displayActivePlayer();
+	introBox.classList.add('disabled');
+	gameContainerDiv.classList.remove('disabled');
 	board.forEach((item, index) => {
 		const box = document.createElement('div');
 		box.classList.add('cell');
 		box.textContent = item;
-		box.addEventListener('click', () => {
-			game.playRound(index);
-			turnDiv.textContent = `It's ${activePlayer.name}'s Turn!`;
-			refreshBoard();
-		});
+		box.addEventListener('click', () => clickPlay(index));
 		boardDiv.appendChild(box);
 	});
 
-	const refreshBoard = () => {
-		board.forEach((item,index)=>{
-			const boxes = document.querySelectorAll('.cell')
-			boxes[index].textContent= item;
-		})
+	const showModal = (message) => {
+		document.getElementById('modal-message').textContent = message;
+		document.getElementById('gameResultModal').style.display = 'flex';
+	};
 
-	}
-	
+	const hideModal = () => {
+		document.getElementById('gameResultModal').style.display = 'none';
+		updateScreen();
+	};
+	document.getElementById('closeModal').addEventListener('click', hideModal);
+
+	const clickPlay = (index) => {
+		let result;
+		if (isPlaying) {
+			result = game.playRound(index);
+			refreshBoard();
+
+			if (result !== 1 && result !== 2) {
+				activePlayer = game.getActivePlayer();
+				displayActivePlayer();
+			} else if (result === 1) {
+				isPlaying = false;
+				setTimeout(() => showModal(`${activePlayer} Won!`), 200);
+			} else if (result === 2) {
+				isPlaying = false;
+				setTimeout(() => showModal(`TIE!`), 200);
+			}
+		}
+	};
 }
+
+const startGame = document.querySelector('#start');
+startGame.addEventListener('click', () => controlScreen());

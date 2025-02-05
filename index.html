@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="code.js" defer></script>
-    <link rel="stylesheet" href="style.css">
-    <title>Document</title>
-</head>
-<body>
-    <header><h1>Tic Tac Toe!</h1></header>
-    <div class="game-container">
-        <div class="active-player-board">Marcel</div>
-        <div class="game-board"></div>
-    </div>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<script
+			src="code.js"
+			defer></script>
+		<link
+			rel="stylesheet"
+			href="style.css" />
+		<title>Document</title>
+	</head>
+	<body>
+		<header><h1>Tic Tac Toe!</h1></header>
+        <div id="gameResultModal" class="modal">
+            <div class="modal-content">
+              <p id="modal-message"></p>
+              <button id="closeModal">Got it</button>
+            </div>
+          </div>
+		<div class="intro">
+			<p>Click <strong>Start Game </strong>to pick your name and choose X or O!</p>
+            <button id="start">Start Game</button>
+		</div>
+		<div class="game-container disabled">
+			<div class="active-player-board"></div>
+			<div class="game-board"></div>
+		</div>
+	</body>
 </html>

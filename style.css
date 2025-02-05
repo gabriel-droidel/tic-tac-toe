@@ -43,21 +43,57 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: 'Comic Sans MS', sans-serif;
 }
 
 header{
-    padding:3rem;
+    padding:1rem;
 
 }
+.intro {
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:20px;
+    font-size:20px;
+    
+}
+
+.intro button{
+    border:none;
+    font-size:30px;
+    font-weight: bold;
+    background-color: blueviolet;
+    color:yellow;
+    padding:10px 20px;
+    border-radius: 10px;
+}
+
+.intro button:hover{
+    cursor: pointer;
+    color:blueviolet;
+    background-color: yellow;
+}
+
+body .disabled {
+    display: none;
+}
 .game-container{
-    background-color: green;
+    background-color: yellow;
+    border-radius: 10px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding:1rem;
     text-align: center;
+    box-shadow: 0px 0px 10px #000;
 }
-
+.active-player-board{
+    padding:10px;
+    font-size: 20px;
+}
 .game-board{
     padding:20px;
     display: grid;
@@ -70,7 +106,52 @@ header{
 
 .cell{
     background-color: blueviolet;
-    width: 150px;
-    height: 150px;
-    font-size: 30px;
+    color: yellow;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.cell:hover{
+    cursor: pointer;
+    background-color: yellow;
+    color:blueviolet;
+    border:5px solid blueviolet;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 10px #000;
+  }
+  
+  .modal button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color:yellow;
+    color: blueviolet;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: bold;
+  }
