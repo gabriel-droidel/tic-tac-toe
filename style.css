@@ -40,22 +40,37 @@ img {
 body {
 	min-height: 100vh;
 	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.selection-box{
-    background-color: red;
-    height: 150px;
-}
-
-.game-container{
-    background-color: blue;
-    width: 600px;
-    height: 550px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap:1px;
+}
+
+header{
+    padding:3rem;
+
+}
+.game-container{
+    background-color: green;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:1rem;
+    text-align: center;
+}
+
+.game-board{
+    padding:20px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: auto;
+    gap:20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.cell{
+    background-color: blueviolet;
+    width: 150px;
+    height: 150px;
+    font-size: 30px;
 }

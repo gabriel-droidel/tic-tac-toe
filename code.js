@@ -9,27 +9,9 @@ function createGameBoard() {
 	const getBoard = () => board;
 
 	// markCell
-	const markCell = (player, selection) => {
-		let location;
-		do {
-			location = Number(
-				prompt(`${player} (${selection}), choose your location (0-8):`)
-			);
-		} while (board[location] !== null); // Keep asking if location is taken
+	const markCell = (location, selection) => (board[location] = selection);
 
-		board[location] = selection;
-	};
-
-	// draw the board in the console
-	const drawBoard = (array) => {
-		console.log(`
-		${array[0]} _ ${array[1]} _ ${array[2]} 
-		${array[3]} _ ${array[4]} _ ${array[5]}
-		${array[6]} _ ${array[7]} _ ${array[8]}
-		`);
-	};
-
-	return { getBoard, drawBoard, markCell };
+	return { getBoard, markCell };
 }
 // Player //
 function createPlayers() {
@@ -107,37 +89,46 @@ function createGameController(
 		return false;
 	};
 
-	const playRound = () => {
-		board.drawBoard(board.getBoard());
+	const playRound = (location) => {
 		let gameOver = false;
 		let moves = 0;
 
-		while (!gameOver && moves < 9) {
-			board.markCell(getActivePlayer().name, getActivePlayer().selection);
-			board.drawBoard(board.getBoard());
-			if (handleWinLogic(board.getBoard(), getActivePlayer().selection)) {
-				gameOver = true;
-				break;
-			}
-			switchPlayerTurn();
-			moves++;
-		}
-		if (gameOver === true) return getActivePlayer().name;
-		else return "It's a tie!";
+		board.markCell(location, getActivePlayer().selection);
+		switchPlayerTurn();
 	};
 
-	return { playRound };
+	return { playRound, getActivePlayer, getBoard: board.getBoard };
 }
 
-function drawGameBoard(board) {
-	const pageContainer = document.querySelector('.game-container');
-	pageContainer.textContent = '';
-	console.log(board);
-	board.forEach((item) => {
+function controlScreen() {
+	const game = createGameController();
+	const boardDiv = document.querySelector('.game-board');
+	const turnDiv = document.querySelector('.active-player-board');
+
+	const updateScreen = () => (boardDiv.textContent = '');
+
+	const board = game.getBoard();
+	const activePlayer = game.getActivePlayer();
+
+	turnDiv.textContent = `It's ${activePlayer.name}'s Turn!`;
+	board.forEach((item, index) => {
 		const box = document.createElement('div');
-		box.classList.add('selection-box');
-		pageContainer.appendChild(box);
+		box.classList.add('cell');
+		box.textContent = item;
+		box.addEventListener('click', () => {
+			game.playRound(index);
+			turnDiv.textContent = `It's ${activePlayer.name}'s Turn!`;
+			refreshBoard();
+		});
+		boardDiv.appendChild(box);
 	});
-}
 
-function placeMarkerOnDOM(container) {}
+	const refreshBoard = () => {
+		board.forEach((item,index)=>{
+			const boxes = document.querySelectorAll('.cell')
+			boxes[index].textContent= item;
+		})
+
+	}
+	
+}
